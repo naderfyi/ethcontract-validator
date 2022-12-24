@@ -58,7 +58,7 @@ func main() {
 
 	// Redirect the "/docs" path to the documentation page
 	router.GET("/docs", func(c *gin.Context) {
-		c.Redirect(http.StatusMovedPermanently, "/docs")
+		c.Redirect(http.StatusMovedPermanently, "/docs/index.html")
 	})
 	router.Use(gin.Recovery())
 
