@@ -1,1 +1,1 @@
-web: heroku-go-exec
+web: bin/sigChecker
