@@ -1,1 +1,1 @@
-web: bin/sigChecker
+web: go run main.go

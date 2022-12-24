@@ -1,5 +1,0 @@
-{
-    "Name": "heroku-go-exec",
-    "Args": ["go", "run", "main.go"]
-  }
-  

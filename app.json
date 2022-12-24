@@ -1,0 +1,7 @@
+{
+    "name": "Ethereum Contract Checker",
+    "scripts": {
+      "build": "echo 'Nothing to build'"
+    }
+  }
+  
