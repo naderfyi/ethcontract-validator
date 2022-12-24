@@ -1,0 +1,52 @@
+basePath: /
+definitions:
+  main.CheckResponse:
+    properties:
+      address:
+        type: string
+      standard:
+        type: string
+      verified:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Check if the contract at the given Ethereum address is an ERC-20 or
+    ERC-721 contract, and whether it has been verified on Etherscan.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ethereum Contract Checker API
+  version: "1.0"
+paths:
+  /check/{address}:
+    get:
+      consumes:
+      - application/json
+      description: Check if the contract at the given Ethereum address is an ERC-20
+        or ERC-721 contract, and whether it has been verified on Etherscan.
+      operationId: check-contract
+      parameters:
+      - description: Ethereum address of the contract to check
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            Token:
+              description: Contract Address
+              type: string
+          schema:
+            $ref: '#/definitions/main.CheckResponse'
+      summary: Check the contract type and verification status for an Ethereum address
+swagger: "2.0"

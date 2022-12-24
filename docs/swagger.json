@@ -1,0 +1,74 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract, and whether it has been verified on Etherscan.",
+        "title": "Ethereum Contract Checker API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/check/{address}": {
+            "get": {
+                "description": "Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract, and whether it has been verified on Etherscan.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check the contract type and verification status for an Ethereum address",
+                "operationId": "check-contract",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ethereum address of the contract to check",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.CheckResponse"
+                        },
+                        "headers": {
+                            "Token": {
+                                "type": "string",
+                                "description": "Contract Address"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.CheckResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "standard": {
+                    "type": "string"
+                },
+                "verified": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

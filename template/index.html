@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Contract Checker</title>
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		.form-container {
+			width: 400px;
+			margin: 0 auto;
+			padding: 20px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		input[type="text"] {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		input[type="submit"],
+		input[type="button"] {
+			width: 100%;
+			margin-top: 20px;  /* Add margin to top of button */
+			background-color: #4CAF50;
+			color: white;
+			padding: 14px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		input[type="submit"]:hover,
+		input[type="button"]:hover {
+			background-color: #45a049;
+		}
+	</style>
+</head>
+<body>
+	<div class="form-container">
+		<h1>Contract Checker</h1>
+		<p><small>Enter an Ethereum contract address to check its verification status and contract type:</small></p>
+        <input type="text" id="contract-address-input" name="contract-address-input" placeholder="Enter contract address">
+		<br>
+		<input type="button" id="contract-type-button" value="Check Contract Type">
+		<input type="button" id="verification-status-button" value="Check Verification Status">
+		<br><br>
+		<div>
+			<p>Contract type: <span id="contract-type-result"></span></p>
+			<p>Verification status: <span id="verification-status-result"></span></p>
+		</div>
+        <p>
+            <br><hr>
+            <small> Need help using the tool? Check out the <a href="/docs">docs</a> for more information.</small>
+        </p>
+	<script>
+		document.getElementById("contract-type-button").addEventListener("click", function() {
+			const address = document.getElementById("contract-address-input").value;
+			fetch(`/check/${address}`)
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById("contract-type-result").innerText = data.standard;
+					if (data.standard === "UNDEFINED") {
+						document.getElementById("contract-type-result").style.color = "red";
+					} else {
+						document.getElementById("contract-type-result").style.color = "green";
+					}
+				});
+		});
+
+		document.getElementById("verification-status-button").addEventListener("click", function() {
+			const address = document.getElementById("contract-address-input").value;
+			fetch(`/check/${address}`)
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById("verification-status-result").innerText = data.verified ? "Verified" : "Not verified";
+					if (data.verified) {
+					document.getElementById("verification-status-result").style.color = "green";
+					} else {
+					document.getElementById("verification-status-result").style.color = "red";
+					}
+			});
+		});
+	</script>
+</body>
+</html>
