@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -74,19 +75,40 @@ func main() {
 	// @Failure 400 {object} main.ErrorResponse "Invalid address"
 	// @Router /check/{address} [get]
 
-	router.GET("/check/:address", func(c *gin.Context) {
+	router.GET("/checkContractStandard/:address", func(c *gin.Context) {
+		// Get the address from the request parameters
+		address := c.Param("address")
+
+		// Convert the address to a common.Address
+		addr := common.HexToAddress(address)
+		// Check the contract type of the contract
+		standard, err := checkContractType(addr, client)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		// Return the result as a JSON response
+		c.JSON(http.StatusOK, CheckResponse{
+			Address:  addr.Hex(),
+			Standard: strings.ToUpper(standard),
+		})
+	})
+
+	router.GET("/checkVerificationStatus/:address", func(c *gin.Context) {
 		// Get the address from the request parameters
 		address := c.Param("address")
 
 		// Convert the address to a common.Address
 		addr := common.HexToAddress(address)
 		// Check the contract type and verification status for the address
-		standard, verified := checker_service(addr, client)
+		verified, err := checkVerificationStatus(addr)
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		// Return the result as a JSON response
 		c.JSON(http.StatusOK, CheckResponse{
 			Address:  addr.Hex(),
-			Standard: strings.ToUpper(standard),
 			Verified: verified,
 		})
 	})
@@ -149,67 +171,86 @@ func IsErc721(addr common.Address, client *ethclient.Client) (bool, error) {
 	return isErc721, nil
 }
 
-// @Summary Check the contract type and verification status for an Ethereum address
-// @Description Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract, and whether it has been verified on Etherscan.
-// @ID check-contract
+// @Summary Check the contract verification status for an Ethereum address
+// @Description Check if the contract has been verified on Etherscan.
+// @ID checkVerificationStatus-contract
 // @Accept  json
 // @Produce  json
-// @Param address path string true "Ethereum address of the contract to check"
-// @Success 200 {object} CheckResponse
+// @Param address path string true "Ethereum address of the contract to checkVerificationStatus"
+// @Success 200 {object} checkVerificationStatusResponse
 // @Header 200 {string} Token "Contract Address"
-// @Router /check/{address} [get]
-func checker_service(addr common.Address, client *ethclient.Client) (string, bool) {
-	isErc20, err := IsErc20(addr, client)
-	if err != nil {
-	}
-	isErc721, err := IsErc721(addr, client)
-	if err != nil {
-	}
+// @Router /checkVerificationStatus/{address} [get]
 
-	// Add the verification checker code here
-	verified, err := check_verification(addr)
-	if err != nil {
-	}
-
-	if isErc20 {
-		return "ERC-20", verified
-	} else if isErc721 {
-		return "ERC-721", verified
-	}
-
-	return "UNDEFINED", verified
-}
-
-func check_verification(addr common.Address) (bool, error) {
-	url := apiURL + addr.Hex() + param
-	resp, err := http.Get(url)
+func checkVerificationStatus(addr common.Address) (bool, error) {
+	// Make an HTTP GET request to the Etherscan API to get the contract source code
+	resp, err := http.Get(apiURL + addr.Hex() + param)
 	if err != nil {
 		return false, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return false, fmt.Errorf("request failed: %s", resp.Status)
-	}
-
-	var result map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
 		return false, err
 	}
 
-	res, ok := result["result"].([]interface{})
-	if !ok {
-		return false, fmt.Errorf("failed to parse response")
+	// Unmarshal the response body into a map
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return false, err
 	}
-	if len(res) == 0 {
+
+	// Check if the contract is verified
+	status, ok := result["status"].(string)
+	if !ok {
+		return false, fmt.Errorf("invalid response from Etherscan API")
+	}
+	if status != "1" {
 		return false, nil
 	}
-	sourceCode, ok := res[0].(map[string]interface{})["SourceCode"].(string)
+
+	// Check if the contract has a source code
+	resultArr, ok := result["result"].([]interface{})
 	if !ok {
-		return false, fmt.Errorf("failed to parse response")
+		return false, fmt.Errorf("invalid response from Etherscan API")
 	}
-	if sourceCode != "" {
-		return true, nil
+	if len(resultArr) == 0 {
+		return false, nil
 	}
-	return false, nil
+
+	return true, nil
+}
+
+// @Summary Check the contract type
+// @Description Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract
+// @ID checkContractType-contract
+// @Accept  json
+// @Produce  json
+// @Param address path string true "Ethereum address of the contract to checkContractType"
+// @Success 200 {object} checkContractTypeResponse
+// @Header 200 {string} Token "Contract Address"
+// @Router /checkContractType/{address} [get]
+func checkContractType(addr common.Address, client *ethclient.Client) (string, error) {
+	// Check if the contract is an ERC-20 contract
+	ok, err := IsErc20(addr, client)
+	if err != nil {
+		return "", err
+	}
+	if ok {
+		return "ERC-20", nil
+	}
+
+	// Check if the contract is an ERC-721 contract
+	ok, err = IsErc721(addr, client)
+	if err != nil {
+		return "", err
+	}
+	if ok {
+		return "ERC-721", nil
+	}
+
+	// Return "UNDEFINED" if the contract is not any of the above types
+	return "UNDEFINED", nil
 }

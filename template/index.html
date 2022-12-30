@@ -50,23 +50,26 @@
 	<div class="form-container">
 		<h1>Contract Checker</h1>
 		<p><small>Enter an Ethereum contract address to check its verification status and contract type:</small></p>
-        <input type="text" id="contract-address-input" name="contract-address-input" placeholder="Enter contract address">
+		<input type="text" id="contract-address-input" name="contract-address-input" placeholder="Enter contract address">
 		<br>
 		<input type="button" id="contract-type-button" value="Check Contract Type">
 		<input type="button" id="verification-status-button" value="Check Verification Status">
 		<br><br>
-		<div>
+		<div id="contract-type-container" style="display: none">
 			<p>Contract type: <span id="contract-type-result"></span></p>
+		</div>
+		<div id="verification-status-container" style="display: none">
 			<p>Verification status: <span id="verification-status-result"></span></p>
 		</div>
-        <p>
-            <br><hr>
+		<p>
+			<hr>
             <small> Need help using the tool? Check out the <a href="/docs">docs</a> for more information.</small>
         </p>
+	</div>	
 	<script>
 		document.getElementById("contract-type-button").addEventListener("click", function() {
 			const address = document.getElementById("contract-address-input").value;
-			fetch(`/check/${address}`)
+			fetch(`/checkContractStandard/${address}`)
 				.then(response => response.json())
 				.then(data => {
 					document.getElementById("contract-type-result").innerText = data.standard;
@@ -75,12 +78,13 @@
 					} else {
 						document.getElementById("contract-type-result").style.color = "green";
 					}
+					document.getElementById("contract-type-container").style.display = "block";
 				});
 		});
 
 		document.getElementById("verification-status-button").addEventListener("click", function() {
 			const address = document.getElementById("contract-address-input").value;
-			fetch(`/check/${address}`)
+			fetch(`/checkVerificationStatus/${address}`)
 				.then(response => response.json())
 				.then(data => {
 					document.getElementById("verification-status-result").innerText = data.verified ? "Verified" : "Not verified";
@@ -89,7 +93,8 @@
 					} else {
 					document.getElementById("verification-status-result").style.color = "red";
 					}
-			});
+					document.getElementById("verification-status-container").style.display = "block";
+				});
 		});
 	</script>
 </body>
