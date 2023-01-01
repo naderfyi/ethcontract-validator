@@ -3,84 +3,84 @@
 <head>
 	<title>Contract Checker</title>
 	<style>
-		body {
-			font-family: sans-serif;
-		}
+	body {
+		font-family: sans-serif;
+	}
 
-		.form-container {
-			width: 500px;
-			margin: 0 auto;
-			padding: 20px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			overflow-x: auto;
-		}
+	.form-container {
+		width: 500px;
+		margin: 0 auto;
+		padding: 20px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		overflow-x: auto;
+	}
 
-		label {
-			display: block;
-			margin-bottom: 10px;
-		}
+	label {
+		display: block;
+		margin-bottom: 10px;
+	}
 
-		input[type="text"] {
-			width: 100%;
-			padding: 12px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			box-sizing: border-box;
-		}
+	.input-style {
+		width: 100%;
+		padding: 12px;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		box-sizing: border-box;
+	}
 
-		input[type="submit"],
-		input[type="button"] {
-			width: 100%;
-			margin-top: 20px;
-			background-color: #4CAF50;
-			color: white;
-			padding: 14px;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-		}
+	input[type="submit"],
+	input[type="button"] {
+		width: 100%;
+		margin-top: 20px;
+		background-color: #4CAF50;
+		color: white;
+		padding: 14px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
 
-		input[type="submit"]:hover,
-		input[type="button"]:hover {
-			background-color: #45a049;
-		}
-		table {
-			max-width: 100%;
-		}
-		th, td {
-			text-align: left;
-			padding: 8px;
-			border: 1px solid #ccc;
-		}
-		tr:nth-child(even) {
-			background-color: #f2f2f2;
-		}
-		#loading-spinner {
-		width: 20px;
-		height: 20px;
-		border: 8px solid #ccc;
-		border-radius: 50%;
-		border-top-color: #4CAF50;
-		animation: spin 1s infinite linear;
-		margin-left: 20px;
-		}
+	input[type="submit"]:hover,
+	input[type="button"]:hover {
+		background-color: #45a049;
+	}
+	table {
+		max-width: 100%;
+	}
+	th, td {
+		text-align: left;
+		padding: 8px;
+		border: 1px solid #ccc;
+	}
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+	#loading-spinner {
+	width: 20px;
+	height: 20px;
+	border: 8px solid #ccc;
+	border-radius: 50%;
+	border-top-color: #4CAF50;
+	animation: spin 1s infinite linear;
+	margin-left: 20px;
+	}
 
-		@keyframes spin {
-		0% {
-			transform: rotate(0deg);
-		}
-		100% {
-			transform: rotate(360deg);
-		}
-		}
+	@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+	}
 	</style>
 </head>
 <body>
 	<div class="form-container">
 		<h1>Contract Checker</h1>
 		<p><small>Enter an Ethereum contract address to check its verification status and contract type:</small></p>
-		<input type="text" id="contract-address-input" name="contract-address-input" placeholder="Enter contract address">
+		<input class="input-style" type="text" id="contract-address-input" name="contract-address-input" placeholder="Enter contract address">
 		<br>
 		<input type="button" id="contract-type-button" value="Check Contract Type">
 		<input type="button" id="verification-status-button" value="Check Verification Status">
@@ -99,8 +99,8 @@
 		<p><small>Enter the start and end block numbers to get the details of contracts created between them:</small></p>
 		<form id="contracts-form">
 			<div style="display: flex">
-			  <input type="number" id="start-block-input" name="start-block-input" min="0" placeholder="Enter start block" style="margin-right: 10px">
-			  <input type="number" id="end-block-input" name="end-block-input" min="0" placeholder="Enter end block">
+			  <input class="input-style" type="number" id="start-block-input" name="start-block-input" min="0" placeholder="Enter start block" style="margin-right: 10px">
+			  <input class="input-style" type="number" id="end-block-input" name="end-block-input" min="0" placeholder="Enter end block">
 			</div>
 			<input type="submit" value="Get by block">
 		</form>	
@@ -109,8 +109,8 @@
 				<br>
 		<form id="contracts-form2">
 			<div style="display: flex">
-			  <input type="text" id="start-time-input" name="start-time-input" placeholder="YYYY-MM-DD HH:MM" style="margin-right: 10px">
-			  <input type="text" id="end-time-input" name="end-time-input" placeholder="YYYY-MM-DD HH:MM">
+			  <input class="input-style" type="text" id="start-time-input" name="start-time-input" placeholder="YYYY-MM-DD HH:MM" style="margin-right: 10px">
+			  <input class="input-style" type="text" id="end-time-input" name="end-time-input" placeholder="YYYY-MM-DD HH:MM">
 			</div>
 			<input type="submit" value="Get by timeframe">
 		  </form>	
@@ -130,7 +130,7 @@
 			<hr>
             <small> Need help using the tool? Check out the <a href="/docs">docs</a> for more information.</small>
         </p>
-	</div>	
+	</div>
 	<script>
 		const form = document.getElementById("contracts-form");
 		const spinner = document.getElementById("loading-spinner");
