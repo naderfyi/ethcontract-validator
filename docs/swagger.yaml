@@ -14,6 +14,19 @@ definitions:
       verified:
         type: boolean
     type: object
+  main.newContractResponse:
+    properties:
+      address:
+        type: string
+      block:
+        type: integer
+      standard:
+        type: string
+      transaction:
+        type: string
+      verified:
+        type: boolean
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -78,4 +91,34 @@ paths:
           schema:
             $ref: '#/definitions/main.checkVerificationStatusResponse'
       summary: Check the contract verification status for an Ethereum address
+  /getContracts/{startBlock}/{endBlock}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of new contracts deployed between a start and end
+        block, along with their verification status, standard (ERC-20 or ERC-721),
+        and transaction details.
+      parameters:
+      - description: Start block
+        in: path
+        name: startBlock
+        required: true
+        type: string
+      - description: End block
+        in: path
+        name: endBlock
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.newContractResponse'
+            type: array
+      summary: Get the new contracts deployed between a start and end block
+      tags:
+      - Contracts
 swagger: "2.0"

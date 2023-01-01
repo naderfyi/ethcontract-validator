@@ -96,6 +96,48 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/getContracts/{startBlock}/{endBlock}": {
+            "get": {
+                "description": "Returns a list of new contracts deployed between a start and end block, along with their verification status, standard (ERC-20 or ERC-721), and transaction details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Get the new contracts deployed between a start and end block",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start block",
+                        "name": "startBlock",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End block",
+                        "name": "endBlock",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/main.newContractResponse"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -114,6 +156,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "verified": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "main.newContractResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "block": {
+                    "type": "integer"
+                },
+                "standard": {
+                    "type": "string"
+                },
+                "transaction": {
                     "type": "string"
                 },
                 "verified": {

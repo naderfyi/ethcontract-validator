@@ -2,49 +2,7 @@
 <html>
 <head>
 	<title>Contract Checker</title>
-	<style>
-		body {
-			font-family: sans-serif;
-		}
-
-		.form-container {
-			width: 400px;
-			margin: 0 auto;
-			padding: 20px;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-		}
-
-		label {
-			display: block;
-			margin-bottom: 10px;
-		}
-
-		input[type="text"] {
-			width: 100%;
-			padding: 12px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			box-sizing: border-box;
-		}
-
-		input[type="submit"],
-		input[type="button"] {
-			width: 100%;
-			margin-top: 20px;  /* Add margin to top of button */
-			background-color: #4CAF50;
-			color: white;
-			padding: 14px;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-
-		input[type="submit"]:hover,
-		input[type="button"]:hover {
-			background-color: #45a049;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<div class="form-container">
@@ -61,41 +19,46 @@
 		<div id="verification-status-container" style="display: none">
 			<p>Verification status: <span id="verification-status-result"></span></p>
 		</div>
+		<hr>
+		<div id="loading-spinner-container" style="display: flex; align-items: center; margin-top: 20px">
+			<h1 style="margin: 0">Get Contracts</h1>
+			<div id="loading-spinner" style="display: none"></div>
+		  </div>
+		<p><small>Enter the start and end block numbers to get the details of contracts created between them:</small></p>
+		<form id="contracts-form">
+			<div style="display: flex">
+			  <input type="number" id="start-block-input" name="start-block-input" min="0" placeholder="Enter start block" style="margin-right: 10px">
+			  <input type="number" id="end-block-input" name="end-block-input" min="0" placeholder="Enter end block">
+			</div>
+			<input type="submit" value="Get by block">
+		</form>	
+				<br>
+				<p><small>Or get contracts in a timeframe:</small></p>
+				<br>
+		<form id="contracts-form2">
+			<div style="display: flex">
+			  <input type="text" id="start-time-input" name="start-time-input" placeholder="YYYY-MM-DD HH:MM" style="margin-right: 10px">
+			  <input type="text" id="end-time-input" name="end-time-input" placeholder="YYYY-MM-DD HH:MM">
+			</div>
+			<input type="submit" value="Get by timeframe">
+		  </form>	
+		<br>	  
+		<div id="contracts-container" style="display: none">
+			<table id="contracts-table">
+				<tr>
+					<th>Address</th>
+					<th>Standard</th>
+					<th>Verified</th>
+					<th>Transaction</th>
+					<th>Block</th>
+				</tr>
+			</table>
+		</div>
 		<p>
 			<hr>
             <small> Need help using the tool? Check out the <a href="/docs">docs</a> for more information.</small>
         </p>
 	</div>	
-	<script>
-		document.getElementById("contract-type-button").addEventListener("click", function() {
-			const address = document.getElementById("contract-address-input").value;
-			fetch(`/checkContractStandard/${address}`)
-				.then(response => response.json())
-				.then(data => {
-					document.getElementById("contract-type-result").innerText = data.standard;
-					if (data.standard === "UNDEFINED") {
-						document.getElementById("contract-type-result").style.color = "red";
-					} else {
-						document.getElementById("contract-type-result").style.color = "green";
-					}
-					document.getElementById("contract-type-container").style.display = "block";
-				});
-		});
-
-		document.getElementById("verification-status-button").addEventListener("click", function() {
-			const address = document.getElementById("contract-address-input").value;
-			fetch(`/checkVerificationStatus/${address}`)
-				.then(response => response.json())
-				.then(data => {
-					document.getElementById("verification-status-result").innerText = data.verified ? "Verified" : "Not verified";
-					if (data.verified) {
-					document.getElementById("verification-status-result").style.color = "green";
-					} else {
-					document.getElementById("verification-status-result").style.color = "red";
-					}
-					document.getElementById("verification-status-container").style.display = "block";
-				});
-		});
-	</script>
+	<script src="script.js"></script>
 </body>
 </html>
