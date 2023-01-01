@@ -25,21 +25,21 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/check/{address}": {
+        "/checkContractType/{address}": {
             "get": {
-                "description": "Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract, and whether it has been verified on Etherscan.",
+                "description": "Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Check the contract type and verification status for an Ethereum address",
-                "operationId": "check-contract",
+                "summary": "Check the contract type",
+                "operationId": "checkContractType-contract",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Ethereum address of the contract to check",
+                        "description": "Ethereum address of the contract to checkContractType",
                         "name": "address",
                         "in": "path",
                         "required": true
@@ -49,7 +49,43 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.CheckResponse"
+                            "$ref": "#/definitions/main.checkContractTypeResponse"
+                        },
+                        "headers": {
+                            "Token": {
+                                "type": "string",
+                                "description": "Contract Address"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/checkVerificationStatus/{address}": {
+            "get": {
+                "description": "Check if the contract has been verified on Etherscan.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check the contract verification status for an Ethereum address",
+                "operationId": "checkVerificationStatus-contract",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ethereum address of the contract to checkVerificationStatus",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.checkVerificationStatusResponse"
                         },
                         "headers": {
                             "Token": {
@@ -63,13 +99,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.CheckResponse": {
+        "main.checkContractTypeResponse": {
             "type": "object",
             "properties": {
                 "address": {
                     "type": "string"
                 },
                 "standard": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.checkVerificationStatusResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
                     "type": "string"
                 },
                 "verified": {

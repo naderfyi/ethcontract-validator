@@ -23,10 +23,13 @@ const (
 	param  = "&apikey=G16FM9WS3JUMQ5G3KTUMYRNNRWFUJWTBA3"
 )
 
-type CheckResponse struct {
+type checkVerificationStatusResponse struct {
+	Address  string `json:"address"`
+	Verified bool   `json:"verified"`
+}
+type checkContractTypeResponse struct {
 	Address  string `json:"address"`
 	Standard string `json:"standard"`
-	Verified bool   `json:"verified"`
 }
 
 // @title Ethereum Contract Checker API
@@ -64,15 +67,6 @@ func main() {
 
 	// Load the HTML templates
 	router.LoadHTMLGlob("template/*.html")
-	// @Summary Check the contract type for a given address
-	// @Description Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract, and whether it has been verified on Etherscan.
-	// @ID check-contract-type
-	// @Accept  json
-	// @Produce  json
-	// @Param address path string true "The Ethereum contract address to check"
-	// @Success 200 {object} main.ContractTypeResponse "The contract type / Verification status for the given address"
-	// @Failure 400 {object} main.ErrorResponse "Invalid address"
-	// @Router /check/{address} [get]
 
 	router.GET("/checkContractStandard/:address", func(c *gin.Context) {
 		// Get the address from the request parameters
@@ -84,7 +78,7 @@ func main() {
 		standard := checkContractType(addr, client)
 
 		// Return the result as a JSON response
-		c.JSON(http.StatusOK, CheckResponse{
+		c.JSON(http.StatusOK, checkContractTypeResponse{
 			Address:  addr.Hex(),
 			Standard: strings.ToUpper(standard),
 		})
@@ -102,7 +96,7 @@ func main() {
 		}
 
 		// Return the result as a JSON response
-		c.JSON(http.StatusOK, CheckResponse{
+		c.JSON(http.StatusOK, checkVerificationStatusResponse{
 			Address:  addr.Hex(),
 			Verified: verified,
 		})
@@ -176,6 +170,15 @@ func IsErc721(addr common.Address, client *ethclient.Client) (bool, error) {
 // @Header 200 {string} Token "Contract Address"
 // @Router /checkVerificationStatus/{address} [get]
 
+// @Summary Check the contract verification status for an Ethereum address
+// @Description Check if the contract has been verified on Etherscan.
+// @ID checkVerificationStatus-contract
+// @Accept  json
+// @Produce  json
+// @Param address path string true "Ethereum address of the contract to checkVerificationStatus"
+// @Success 200 {object} checkVerificationStatusResponse
+// @Header 200 {string} Token "Contract Address"
+// @Router /checkVerificationStatus/{address} [get]
 func checkVerificationStatus(addr common.Address) (bool, error) {
 	url := apiURL + addr.Hex() + param
 	resp, err := http.Get(url)

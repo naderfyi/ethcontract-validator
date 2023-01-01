@@ -1,10 +1,15 @@
 basePath: /
 definitions:
-  main.CheckResponse:
+  main.checkContractTypeResponse:
     properties:
       address:
         type: string
       standard:
+        type: string
+    type: object
+  main.checkVerificationStatusResponse:
+    properties:
+      address:
         type: string
       verified:
         type: boolean
@@ -24,15 +29,15 @@ info:
   title: Ethereum Contract Checker API
   version: "1.0"
 paths:
-  /check/{address}:
+  /checkContractType/{address}:
     get:
       consumes:
       - application/json
       description: Check if the contract at the given Ethereum address is an ERC-20
-        or ERC-721 contract, and whether it has been verified on Etherscan.
-      operationId: check-contract
+        or ERC-721 contract
+      operationId: checkContractType-contract
       parameters:
-      - description: Ethereum address of the contract to check
+      - description: Ethereum address of the contract to checkContractType
         in: path
         name: address
         required: true
@@ -47,6 +52,30 @@ paths:
               description: Contract Address
               type: string
           schema:
-            $ref: '#/definitions/main.CheckResponse'
-      summary: Check the contract type and verification status for an Ethereum address
+            $ref: '#/definitions/main.checkContractTypeResponse'
+      summary: Check the contract type
+  /checkVerificationStatus/{address}:
+    get:
+      consumes:
+      - application/json
+      description: Check if the contract has been verified on Etherscan.
+      operationId: checkVerificationStatus-contract
+      parameters:
+      - description: Ethereum address of the contract to checkVerificationStatus
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            Token:
+              description: Contract Address
+              type: string
+          schema:
+            $ref: '#/definitions/main.checkVerificationStatusResponse'
+      summary: Check the contract verification status for an Ethereum address
 swagger: "2.0"
