@@ -25,7 +25,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/checkContractType/{address}": {
+        "/checkContractStandard/{address}": {
             "get": {
                 "description": "Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract",
                 "consumes": [
@@ -34,12 +34,12 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Check the contract type",
-                "operationId": "checkContractType-contract",
+                "summary": "Check the contract standard for an Ethereum address",
+                "operationId": "checkContractStandard",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Ethereum address of the contract to checkContractType",
+                        "description": "Ethereum address of the contract to check Standard",
                         "name": "address",
                         "in": "path",
                         "required": true
@@ -49,7 +49,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.checkContractTypeResponse"
+                            "$ref": "#/definitions/main.checkContractStandardResponse"
                         },
                         "headers": {
                             "Token": {
@@ -141,7 +141,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.checkContractTypeResponse": {
+        "main.checkContractStandardResponse": {
             "type": "object",
             "properties": {
                 "address": {

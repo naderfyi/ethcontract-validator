@@ -32,7 +32,7 @@ type checkVerificationStatusResponse struct {
 	Address  string `json:"address"`
 	Verified bool   `json:"verified"`
 }
-type checkContractTypeResponse struct {
+type checkContractStandardResponse struct {
 	Address  string `json:"address"`
 	Standard string `json:"standard"`
 }
@@ -162,10 +162,10 @@ func main() {
 		// Convert the address to a common.Address
 		addr := common.HexToAddress(address)
 		// Check the contract type of the contract
-		standard := checkContractType(addr, client)
+		standard := checkContractStandard(addr, client)
 
 		// Return the result as a JSON response
-		c.JSON(http.StatusOK, checkContractTypeResponse{
+		c.JSON(http.StatusOK, checkContractStandardResponse{
 			Address:  addr.Hex(),
 			Standard: strings.ToUpper(standard),
 		})
@@ -205,7 +205,7 @@ func main() {
 
 		// Convert the address to a common.Address
 		addr := common.HexToAddress(address)
-		// Check the contract type and verification status for the address
+		// Check the contract verification status for the address
 		verified, err := checkVerificationStatus(addr)
 		if err != nil {
 		}
@@ -318,16 +318,16 @@ func checkVerificationStatus(addr common.Address) (bool, error) {
 	return false, nil
 }
 
-// @Summary Check the contract type
+// @Summary Check the contract standard for an Ethereum address
 // @Description Check if the contract at the given Ethereum address is an ERC-20 or ERC-721 contract
-// @ID checkContractType-contract
+// @ID checkContractStandard
 // @Accept  json
 // @Produce  json
-// @Param address path string true "Ethereum address of the contract to checkContractType"
-// @Success 200 {object} checkContractTypeResponse
+// @Param address path string true "Ethereum address of the contract to check Standard"
+// @Success 200 {object} checkContractStandardResponse
 // @Header 200 {string} Token "Contract Address"
-// @Router /checkContractType/{address} [get]
-func checkContractType(addr common.Address, client *ethclient.Client) string {
+// @Router /checkContractStandard/{address} [get]
+func checkContractStandard(addr common.Address, client *ethclient.Client) string {
 	isErc20, err := IsErc20(addr, client)
 	if err != nil {
 	}
@@ -373,7 +373,7 @@ func getContracts(startBlock, endBlock int64, client *ethclient.Client) ([]newCo
 			}
 			if isContract {
 				// Get the contract type and verification status
-				standard := checkContractType(contractAddress, client)
+				standard := checkContractStandard(contractAddress, client)
 				verified, err := checkVerificationStatus(contractAddress)
 				if err != nil {
 					return nil, err

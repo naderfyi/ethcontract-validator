@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  main.checkContractTypeResponse:
+  main.checkContractStandardResponse:
     properties:
       address:
         type: string
@@ -42,15 +42,15 @@ info:
   title: Ethereum Contract Checker API
   version: "1.0"
 paths:
-  /checkContractType/{address}:
+  /checkContractStandard/{address}:
     get:
       consumes:
       - application/json
       description: Check if the contract at the given Ethereum address is an ERC-20
         or ERC-721 contract
-      operationId: checkContractType-contract
+      operationId: checkContractStandard
       parameters:
-      - description: Ethereum address of the contract to checkContractType
+      - description: Ethereum address of the contract to check Standard
         in: path
         name: address
         required: true
@@ -65,8 +65,8 @@ paths:
               description: Contract Address
               type: string
           schema:
-            $ref: '#/definitions/main.checkContractTypeResponse'
-      summary: Check the contract type
+            $ref: '#/definitions/main.checkContractStandardResponse'
+      summary: Check the contract standard for an Ethereum address
   /checkVerificationStatus/{address}:
     get:
       consumes:
