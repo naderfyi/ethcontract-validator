@@ -25,7 +25,7 @@ import (
 
 const (
 	apiURL = "https://api.etherscan.io/api?module=contract&action=getsourcecode&address="
-	param  = "&apikey=G16FM9WS3JUMQ5G3KTUMYRNNRWFUJWTBA3"
+	param  = "&apikey=Your_API_KEY"
 )
 
 type checkVerificationStatusResponse struct {
@@ -60,7 +60,7 @@ type newContractResponse struct {
 
 func main() {
 	// Connect to the Ethereum node
-	client, err := ethclient.Dial("https://mainnet.infura.io/v3/0be6799a482149d8943b1406039a585c")
+	client, err := ethclient.Dial("https://mainnet.infura.io/v3/YOUR_ID")
 	if err != nil {
 		fmt.Println(err)
 		return
